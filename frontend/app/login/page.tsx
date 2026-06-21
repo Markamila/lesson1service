@@ -73,6 +73,13 @@ export default function LoginPage() {
           {loading ? "Вход..." : "Войти"}
         </button>
 
+        <a
+          href="http://localhost:4000/auth/google"
+          className="mt-3 w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-50 text-sm"
+        >
+          Войти через Google
+        </a>
+
         <p className="text-sm text-center mt-4 text-gray-500">
           Нет аккаунта?{" "}
           <Link href="/register" className="text-blue-600 hover:underline">
