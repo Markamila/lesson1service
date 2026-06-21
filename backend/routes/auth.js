@@ -93,4 +93,33 @@ router.get('/me', authMiddleware, async (req, res) => {
   res.json({ user: req.user });
 });
 
+// ───────── ОБНОВЛЕНИЕ ТОКЕНА ─────────
+router.post('/refresh', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(401).json({ error: 'Refresh token не предоставлен' });
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ error: 'Недействительный refresh token' });
+      }
+
+      const newAccessToken = jwt.sign(
+        { id: decoded.id, email: decoded.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '15m' }
+      );
+
+      res.json({ accessToken: newAccessToken });
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 module.exports = router;
