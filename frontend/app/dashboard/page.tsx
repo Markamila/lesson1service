@@ -51,16 +51,11 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm text-center">
-        <h1 className="text-2xl font-semibold mb-2">Добро пожаловать 👋</h1>
-        <p className="text-gray-600 mb-6">{user.email}</p>
-        <button
-          onClick={handleLogout}
-          className="w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-900"
-        >
-          Выйти
-        </button>
-      </div>
+      {/* Приветствие */}
+        <div className="mb-6">
+          <h1 className="text-xl font-semibold">Добро пожаловать</h1>
+          <p className="text-sm text-gray-500">{user.full_name || user.email}</p>
+        </div>
     </div>
   );
 }

@@ -55,6 +55,10 @@ services:
     restart: unless-stopped
     ports:
       - "3001:3001"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next
     depends_on:
       - backend
     networks:
