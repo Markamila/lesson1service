@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const uploadRoutes = require('./routes/upload');
 
 const app = express();
 
@@ -44,9 +45,10 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
+app.use('/upload', uploadRoutes);
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Backend работает 🚀' });
+  res.json({ message: 'Backend работает' });
 });
 
 // Эндпоинт, который будет читать Prometheus
