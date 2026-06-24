@@ -58,3 +58,34 @@ export async function getMe(token: string) {
   if (!res.ok) throw new Error(data.error || "Ошибка авторизации");
   return data;
 }
+
+export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  let token = localStorage.getItem("accessToken");
+
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (res.status === 401 || res.status === 403) {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) throw new Error("Сессия истекла");
+
+    const { accessToken } = await refreshAccessToken(refreshToken);
+    localStorage.setItem("accessToken", accessToken);
+    token = accessToken;
+
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  return res;
+}

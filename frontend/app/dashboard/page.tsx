@@ -31,7 +31,7 @@ export default function DashboardPage() {
   }
 
   const services = [
-    { icon: "💳", title: "Кошелёк", desc: "Баланс, пополнение, история операций", href: "/wallet", ready: false },
+    { icon: "💳", title: "Кошелёк", desc: "Баланс, пополнение, история операций", href: "/wallet", ready: true },
     { icon: "🛍️", title: "Маркетплейс", desc: "Товары, категории, корзина, заказы", href: "/market", ready: false },
     { icon: "👤", title: "Профиль", desc: "Имя, телефон, настройки аккаунта", href: "/profile", ready: true },
     { icon: "📦", title: "Доставка", desc: "Заказы и отслеживание", href: "/delivery", ready: false },
