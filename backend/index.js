@@ -6,6 +6,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const uploadRoutes = require('./routes/upload');
+const walletRoutes = require('./routes/wallet');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/upload', uploadRoutes);
+app.use('/wallet', walletRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Backend работает' });
