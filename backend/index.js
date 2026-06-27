@@ -7,6 +7,8 @@ const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const uploadRoutes = require('./routes/upload');
 const walletRoutes = require('./routes/wallet');
+const notesRoutes = require('./routes/notes');
+const tasksRoutes = require('./routes/tasks');
 
 const app = express();
 
@@ -48,6 +50,8 @@ app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/wallet', walletRoutes);
+app.use('/notes', notesRoutes);
+app.use('/tasks', tasksRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Backend работает' });
