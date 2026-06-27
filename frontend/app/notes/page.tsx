@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authFetch } from "../../lib/api";
+import { authFetch, API_URL } from "../../lib/api";
 
 type Note = {
   id: number;
@@ -30,7 +30,7 @@ export default function NotesPage() {
 
   async function fetchNotes() {
     try {
-      const res = await authFetch(`http://localhost:4000/notes${search ? `?search=${search}` : ""}`);
+      const res = await authFetch(`${API_URL}/notes${search ? `?search=${search}` : ""}`);
       const data = await res.json();
       setNotes(data.notes || []);
     } catch {
@@ -46,13 +46,13 @@ export default function NotesPage() {
     if (!title.trim()) return;
 
     if (editNote) {
-      await authFetch(`http://localhost:4000/notes/${editNote.id}`, {
+      await authFetch(`${API_URL}/notes/${editNote.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, content, color }),
       });
     } else {
-      await authFetch("http://localhost:4000/notes", {
+      await authFetch("${API_URL}/notes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, content, color }),
@@ -68,12 +68,12 @@ export default function NotesPage() {
   }
 
   async function handleDelete(id: number) {
-    await authFetch(`http://localhost:4000/notes/${id}`, { method: "DELETE" });
+    await authFetch(`${API_URL}/notes/${id}`, { method: "DELETE" });
     fetchNotes();
   }
 
   async function handlePin(note: Note) {
-    await authFetch(`http://localhost:4000/notes/${note.id}`, {
+    await authFetch(`${API_URL}/notes/${note.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ is_pinned: !note.is_pinned }),

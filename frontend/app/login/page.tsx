@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { login } from "../../lib/api";
+import { login, API_URL } from "../../lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -74,7 +74,7 @@ export default function LoginPage() {
         </button>
 
         <a
-          href="http://localhost:4000/auth/google"
+          href={`${API_URL}/auth/google`}
           className="mt-3 w-full flex items-center justify-center gap-2 border border-gray-300 py-2 rounded hover:bg-gray-50 text-sm"
         >
           Войти через Google

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:4000";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "${API_URL}";
 
 export async function register(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/register`, {

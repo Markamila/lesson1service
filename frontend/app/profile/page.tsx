@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { authFetch, API_URL } from "../../lib/api";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -26,9 +27,7 @@ export default function ProfilePage() {
     const token = localStorage.getItem("accessToken");
     if (!token) { router.push("/login"); return; }
 
-    fetch("http://localhost:4000/profile", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    authFetch(`${API_URL}/profile`)
       .then((res) => res.json())
       .then((data) => {
         setUser(data.user);
@@ -45,11 +44,10 @@ export default function ProfilePage() {
     setSaving(true);
     setSaveSuccess(false);
     setSaveError("");
-    const token = localStorage.getItem("accessToken");
     try {
-      const res = await fetch("http://localhost:4000/profile", {
+      const res = await authFetch(`${API_URL}/profile`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ full_name: fullName, phone, birth_date: birthDate || null, gender: gender || null, avatar_url: avatarUrl || null }),
       });
       const data = await res.json();
@@ -68,15 +66,13 @@ export default function ProfilePage() {
     if (!file) return;
 
     setUploadingAvatar(true);
-    const token = localStorage.getItem("accessToken");
 
     try {
       const formData = new FormData();
       formData.append("avatar", file);
 
-      const res = await fetch("http://localhost:4000/upload/avatar", {
+      const res = await authFetch(`${API_URL}/upload/avatar`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
@@ -94,11 +90,10 @@ export default function ProfilePage() {
     setPassLoading(true);
     setPassSuccess(false);
     setPassError("");
-    const token = localStorage.getItem("accessToken");
     try {
-      const res = await fetch("http://localhost:4000/profile/password", {
+      const res = await authFetch(`${API_URL}/profile/password`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
       });
       const data = await res.json();
@@ -125,7 +120,6 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-lg mx-auto space-y-6">
 
-        {/* Аватар и имя */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
             {avatarUrl ? (
@@ -185,12 +179,7 @@ export default function ProfilePage() {
                 )}
                 <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-sm px-4 py-2 rounded-lg transition-colors">
                   Выбрать фото
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleAvatarUpload}
-                  />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
                 </label>
                 {uploadingAvatar && <span className="text-sm text-gray-500">Загрузка...</span>}
               </div>
@@ -202,9 +191,6 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        
-
-        {/* Смена пароля */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           <h2 className="font-semibold mb-4">Смена пароля</h2>
 

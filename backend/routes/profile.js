@@ -82,4 +82,66 @@ router.patch('/password', authMiddleware, async (req, res) => {
   }
 });
 
+// ───────── СВОДКА ПРОФИЛЯ ─────────
+router.get('/summary', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Параллельно загружаем все данные
+    const [userResult, walletResult, notesResult, tasksResult] = await Promise.all([
+      pool.query(
+        'SELECT id, email, full_name, phone, role, avatar_url FROM users WHERE id = $1',
+        [userId]
+      ),
+      pool.query(
+        'SELECT balance FROM wallets WHERE user_id = $1',
+        [userId]
+      ),
+      pool.query(
+        'SELECT id, title, content, color FROM notes WHERE user_id = $1 ORDER BY is_pinned DESC, updated_at DESC LIMIT 4',
+        [userId]
+      ),
+      pool.query(
+        'SELECT id, title, is_done, priority, deadline FROM tasks WHERE user_id = $1 ORDER BY is_done ASC, deadline ASC NULLS LAST LIMIT 5',
+        [userId]
+      ),
+    ]);
+
+    // Статистика задач
+    const totalTasks = tasksResult.rows.length;
+    const doneTasks = tasksResult.rows.filter(t => t.is_done).length;
+
+    // Последние транзакции
+    let transactions = [];
+    if (walletResult.rows.length > 0) {
+      const txResult = await pool.query(
+        `SELECT t.* FROM transactions t
+         JOIN wallets w ON t.wallet_id = w.id
+         WHERE w.user_id = $1
+         ORDER BY t.created_at DESC LIMIT 3`,
+        [userId]
+      );
+      transactions = txResult.rows;
+    }
+
+    res.json({
+      user: userResult.rows[0],
+      wallet: {
+        balance: walletResult.rows[0]?.balance || '0.00',
+        transactions,
+      },
+      notes: notesResult.rows,
+      tasks: {
+        items: tasksResult.rows,
+        total: totalTasks,
+        done: doneTasks,
+      },
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 module.exports = router;

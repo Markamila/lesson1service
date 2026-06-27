@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authFetch } from "../../lib/api";
+import { authFetch, API_URL } from "../../lib/api";
 
 type Task = {
   id: number;
@@ -34,7 +34,7 @@ export default function TasksPage() {
   async function fetchTasks() {
     try {
       const params = filter === "active" ? "?done=false" : filter === "done" ? "?done=true" : "";
-      const res = await authFetch(`http://localhost:4000/tasks${params}`);
+      const res = await authFetch(`${API_URL}/tasks${params}`);
       const data = await res.json();
       setTasks(data.tasks || []);
     } catch {
@@ -49,7 +49,7 @@ export default function TasksPage() {
   async function handleCreate() {
     if (!title.trim()) return;
 
-    await authFetch("http://localhost:4000/tasks", {
+    await authFetch("${API_URL}/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, description, priority, deadline: deadline || null }),
@@ -64,7 +64,7 @@ export default function TasksPage() {
   }
 
   async function handleToggle(task: Task) {
-    await authFetch(`http://localhost:4000/tasks/${task.id}`, {
+    await authFetch(`${API_URL}/tasks/${task.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ is_done: !task.is_done }),
@@ -73,7 +73,7 @@ export default function TasksPage() {
   }
 
   async function handleDelete(id: number) {
-    await authFetch(`http://localhost:4000/tasks/${id}`, { method: "DELETE" });
+    await authFetch(`${API_URL}/tasks/${id}`, { method: "DELETE" });
     fetchTasks();
   }
 

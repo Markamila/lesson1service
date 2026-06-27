@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { authFetch } from "../../lib/api";
+import { authFetch, API_URL } from "../../lib/api";
 
 export default function WalletPage() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function WalletPage() {
     if (!token) { router.push("/login"); return; }
 
     try {
-      const res = await authFetch("http://localhost:4000/wallet");
+      const res = await authFetch(`${API_URL}/wallet`);
       const data = await res.json();
       setBalance(data.balance || "0.00");
       setTransactions(data.transactions || []);
@@ -52,7 +52,7 @@ export default function WalletPage() {
     setSuccess("");
 
     try {
-      const res = await authFetch(`http://localhost:4000/wallet/${type}`, {
+      const res = await authFetch(`${API_URL}/wallet/${type}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: parseFloat(amount), description }),
